@@ -96,11 +96,11 @@ public class ConvexHull
         double leftCos = getCos(p, points[left]);
         double rightCos = getCos(p, points[right]);
   
-        // If left child is larger than root.
+        // If left child is larger than parent.
         if (left < size && leftCos * -1 > largestCos * -1)
             largest = left; 
   
-        // If right child is larger than largest so far.
+        // If right child is larger than parent.
         if (right < size && rightCos * -1 > largestCos * -1) 
             largest = right; 
   
