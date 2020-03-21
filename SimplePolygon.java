@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 
 public class SimplePolygon
@@ -52,15 +51,15 @@ public class SimplePolygon
         if (vertexList.isEmpty()) return Double.NaN;
 
         double sum1 = 0.0, sum2 = 0.0;
-        Point vertI, vertIplus1;
+        Point v1, v2;
 
         for (int i = 0; i < vertexList.size(); i++) 
         {
-            vertI = vertexList.get(i);
-            vertIplus1 = vertexList.get((i+1) % vertexList.size());
+            v1 = vertexList.get(i);
+            v2 = vertexList.get((i+1) % vertexList.size());
 
-            sum1 += vertI.getX() * vertIplus1.getY();
-            sum2 += vertIplus1.getX() * vertI.getY();
+            sum1 += v1.getX() * v2.getY();
+            sum2 += v2.getX() * v1.getY();
         }
 
         // This is using the Shoelace Formula to calculate the area.
@@ -230,16 +229,16 @@ public class SimplePolygon
             // Using horizontal right-moving ray from point towards polygon to 
             // check for intersections.
             int crossings = 0;
-            Point p1, p2;
+            Point v1, v2;
 
             for (int i = 0; i < vertexList.size(); i++)
             {
-                p1 = vertexList.get(i);
-                p2 = vertexList.get((i+1) % vertexList.size());
+                v1 = vertexList.get(i);
+                v2 = vertexList.get((i+1) % vertexList.size());
 
                 // True if point is equal to any other point, or is on the 
                 // boundary of an edge.
-                if (isPointOnLineSegment(p, p1, p2)) 
+                if (isPointOnLineSegment(p, v1, v2)) 
                 {
                     return true;
                 }
@@ -270,11 +269,11 @@ public class SimplePolygon
                 // lies on any of the boundaries of the polygon.
 
                     // Rule 1: Upward edge crossing.
-                if (( (p.getY() > p1.getY() || Math.abs(p.getY() - p1.getY()) < Globals.POINT_EPSILON) 
-                    && p.getY() < p2.getY() )
+                if (( (p.getY() > v1.getY() || Math.abs(p.getY() - v1.getY()) < Globals.POINT_EPSILON) 
+                    && p.getY() < v2.getY() )
                     // Rule 2: Downward edge crossing.
-                    || ( p.getY() < p1.getY() 
-                    && (p.getY() > p2.getY() || Math.abs(p.getY() - p2.getY()) < Globals.POINT_EPSILON) ))
+                    || ( p.getY() < v1.getY() 
+                    && (p.getY() > v2.getY() || Math.abs(p.getY() - v2.getY()) < Globals.POINT_EPSILON) ))
                     // Rule 3: We ignore horizontal edges.
                 {
                     // Calculate the x-coordinate of the edge-ray crossing 
@@ -286,8 +285,8 @@ public class SimplePolygon
                     // Which will prevent division by zero for vertical edges,
                     // and we don't have to worry about horizontal edges as we 
                     // ignore them by Rule 3.
-                    double x = ((p.getY() - p1.getY()) * (p2.getX() - p1.getX()) 
-                        / (p2.getY() - p1.getY())) + p1.getX();
+                    double x = ((p.getY() - v1.getY()) * (v2.getX() - v1.getX()) 
+                        / (v2.getY() - v1.getY())) + v1.getX();
 
                     // Rule 4: The edge-ray intersection must be to the right 
                     // of point.
