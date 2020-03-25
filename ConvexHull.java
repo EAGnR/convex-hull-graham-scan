@@ -41,7 +41,7 @@ public class ConvexHull
         //swap the first element of the array with the lowest point
         swap(points, 0, lowestPointIndex);
         
-        heapSort(points, lowestPoint);
+        heapSort(points);
 
         for(int i = 0; i < points.length; i++)
             System.out.print(points[i] + " ");
@@ -98,7 +98,7 @@ public class ConvexHull
      * 
      * @param points Unordered finite set of points, the array will be sorted.
      */
-    private static void heapSort(Point[] points, Point lowestPoint) 
+    private static void heapSort(Point[] points) 
     { 
         Point[] subPoints = Arrays.copyOfRange(points, 1, points.length);
         int n = subPoints.length;
@@ -106,7 +106,7 @@ public class ConvexHull
         // Build heap (rearranges array)
         // i starts at last non-leaf node, heapfiying by sift-down technique.
         for (int i = n/2 - 1; i >= 0; i--) 
-            heapify(subPoints, n, i, lowestPoint); 
+            heapify(subPoints, n, i, points[0]); 
   
         // One by one extract an element from heap, and sort array.
         for (int i = n - 1; i >= 0; i--) 
@@ -114,7 +114,7 @@ public class ConvexHull
             // Move current root to end.
             swap(subPoints, 0, i);
             // Call max heapify on the reduced heap.
-            heapify(subPoints, i, 0, lowestPoint); 
+            heapify(subPoints, i, 0, points[0]); 
         }
 
         for (int i = 0; i < subPoints.length; i++)
