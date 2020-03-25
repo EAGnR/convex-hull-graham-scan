@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Stack;
 
 
@@ -39,7 +40,7 @@ public class ConvexHull
 
         //swap the first element of the array with the lowest point
         swap(points, 0, lowestPointIndex);
-
+        
         heapSort(points, lowestPoint);
 
         for(int i = 0; i < points.length; i++)
@@ -99,21 +100,27 @@ public class ConvexHull
      */
     private static void heapSort(Point[] points, Point lowestPoint) 
     { 
-        int n = points.length; 
+        Point[] subPoints = Arrays.copyOfRange(points, 1, points.length);
+        int n = subPoints.length;
   
         // Build heap (rearranges array)
         // i starts at last non-leaf node, heapfiying by sift-down technique.
         for (int i = n/2 - 1; i >= 0; i--) 
-            heapify(points, n, i, lowestPoint); 
+            heapify(subPoints, n, i, lowestPoint); 
   
         // One by one extract an element from heap, and sort array.
         for (int i = n - 1; i >= 0; i--) 
         { 
             // Move current root to end.
-            swap(points, 0, i);
+            swap(subPoints, 0, i);
             // Call max heapify on the reduced heap.
-            heapify(points, i, 0, lowestPoint); 
-        } 
+            heapify(subPoints, i, 0, lowestPoint); 
+        }
+
+        for (int i = 0; i < subPoints.length; i++)
+        {
+            points[i + 1] = subPoints[i];
+        }
     } 
   
     /**
@@ -131,8 +138,8 @@ public class ConvexHull
     private static void heapify(Point[] points, int size, int i, Point p) 
     { 
         int largest = i; // Initialize largest as root of subtree.
-        int left = 2*i + 1; // left child = 2*i 
-        int right = 2*i + 2; // right child = 2*i + 1
+        int left = 2*i + 1; // left child = 2*i + 1
+        int right = 2*i + 2; // right child = 2*i + 2
 
         // Instead of computing the angle between the x-axis and a given point,
         // we calculate the Cosine of the angle as it is monotic in [0,pi],
@@ -141,7 +148,7 @@ public class ConvexHull
         
         //if left is a valid index in the heap (as a node may not have a left
         //child)
-        if(left <= size)
+        if(left < size)
         {
             double leftCos = getCos(p, points[left]);
 
@@ -152,7 +159,7 @@ public class ConvexHull
 
         //if right is a valid index in the heap (as a node may not have a right
         //child)
-        if(right <= size)
+        if(right < size)
         {
             double rightCos = getCos(p, points[right]);
 
