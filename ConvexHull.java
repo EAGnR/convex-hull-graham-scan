@@ -36,27 +36,53 @@ public class ConvexHull
                 }
             }
         }
-        System.out.println(lowestPoint);
 
         //swap the first element of the array with the lowest point
         swap(points, 0, lowestPointIndex);
-        
         heapSort(points);
 
-        for(int i = 0; i < points.length; i++)
-            System.out.print(points[i] + " ");
-        System.out.println();
+        int size = points.length;
+
+        //If there are multiple points that give the same angle, we only keep the 
+        //one farthest from the lowest point and discard the rest. Since we are
+        //possibly discarding points, we will refer to the number of points by
+        //the new variable size, and no longer the length of the array
+        for(int i = 1; i < size; i++)
+        {
+            int offset = 0; //this will be the number of elements we will need to discard
+            while(i + offset + 1 < size 
+            && Math.abs(getCos(lowestPoint, points[i]) - getCos(lowestPoint, points[i + offset + 1])) 
+            < Globals.POINT_EPSILON)
+            {
+                //Make the farthest point come before the other points with the same cosine
+                if(lowestPoint.distance(points[i]) < lowestPoint.distance(points[i + offset + 1]))
+                    swap(points, i, i + offset + 1);
+
+                offset++;
+            }
+
+            //Offset is now the number of elements with the same angle as points[i]
+            //and therefore how many elements we must discard from the sorted array
+            if(offset > 0) //an offset of 0 means no elements are to be discarded
+            {
+                //shift elements left by the offset to replace elements to be 
+                //discarded (or until the end of the array is reached)
+                for(int j = i + 1; j <= i + offset && j + offset < size; j++)
+                    points[j] = points[j + offset];
+
+                size -= offset; //reduce the size by the number of elements discarded
+            }
+        }
 
         Stack<Point> stack = new Stack<Point>();
-
-        for(Point point : points)
+        for(int i = 0; i < size; i++)
         {
             while(stack.size() > 1 
-            && counterClockwise(nextToTop(stack), stack.peek(), point) < 0)
+            && counterClockwise(nextToTop(stack), stack.peek(), points[i]) < 0)
             {
                 stack.pop();
             }
-            stack.push(point);
+            stack.push(points[i]);
         }
 
         SimplePolygon polygon = new SimplePolygon();
@@ -153,8 +179,11 @@ public class ConvexHull
             double leftCos = getCos(p, points[left]);
 
             // If left child is larger than parent.
-            if (leftCos * -1 > largestCos * -1)
+            if (leftCos * -1  > largestCos * -1)
+            {
                 largest = left; 
+                largestCos = getCos(p, points[largest]);
+            }
         }
 
         //if right is a valid index in the heap (as a node may not have a right
@@ -202,6 +231,8 @@ public class ConvexHull
      */
     private static double getCos(Point p, Point q)
     {
+        if(Math.abs(q.getX() - p.getX()) < Globals.POINT_EPSILON) return 0;
+
         return (q.getX() - p.getX()) / p.distance(q);
     }
 
