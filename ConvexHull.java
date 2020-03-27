@@ -46,7 +46,7 @@ public class ConvexHull
         //If there are multiple points that give the same angle, we only keep the 
         //one farthest from the lowest point and discard the rest. Since we are
         //possibly discarding points, we will refer to the number of points by
-        //the new variable size, and no longer the length of the array
+        //the new variable size, and no longer by the length of the array
         for(int i = 1; i < size; i++)
         {
             int offset = 0; //this will be the number of elements we will need to discard
@@ -94,23 +94,6 @@ public class ConvexHull
         }
 
         return polygon;
-    }
-
-    /**
-     * Returns the element right below the top element of the stack.
-     * @param stack the stack of points
-     * @return the element right below the top of the stack
-     */
-    private static Point nextToTop(Stack<Point> stack)
-    {
-        Point top = stack.pop();
-
-        //if top was the only element in the stack
-        if(stack.empty()) return null;
-
-        Point nextToTop = stack.peek();
-        stack.push(top);
-        return nextToTop;
     }
 
     /**
@@ -208,19 +191,6 @@ public class ConvexHull
     }
 
     /**
-     * Swaps two elements of an array.
-     * @param points the array
-     * @param x the index of the first element to be swapped.
-     * @param y the index of the second element to be swapped.
-     */
-    private static void swap(Point[] points, int x, int y)
-    {
-        Point swap = points[x];
-        points[x] = points[y];
-        points[y] = swap;
-    }
-
-    /**
      * Returns the Cosine of the angle formed by a vector pq, and a unit vector
      * in the direction of the x-axis. i.e., the angle between pq and the x-axis.
      * We calculate the Cosine using the dot product of the vectors
@@ -251,5 +221,38 @@ public class ConvexHull
 
         return (p2.getX() - p1.getX()) * (p3.getY() - p1.getY()) 
              - (p2.getY() - p1.getY()) * (p3.getX() - p1.getX());
+    }
+    
+    /**
+     * Returns the element right below the top element of the stack.
+     * @param stack the stack of points
+     * @return the element right below the top of the stack
+     */
+    private static Point nextToTop(Stack<Point> stack)
+    {
+        Point top = stack.pop();
+
+        //if top was the only element in the stack
+        if(stack.empty()) 
+        {
+            stack.push(top);
+            return null;
+        }
+        Point nextToTop = stack.peek();
+        stack.push(top);
+        return nextToTop;
+    }
+
+    /**
+     * Swaps two elements of an array.
+     * @param points the array
+     * @param x the index of the first element to be swapped.
+     * @param y the index of the second element to be swapped.
+     */
+    private static void swap(Point[] points, int x, int y)
+    {
+        Point swap = points[x];
+        points[x] = points[y];
+        points[y] = swap;
     }
 }
