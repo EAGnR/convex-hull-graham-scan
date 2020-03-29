@@ -37,20 +37,25 @@ public class ConvexHull
             }
         }
 
-        //swap the first element of the array with the lowest point
+        // Swap the first element of the array with the lowest point
         swap(points, 0, lowestPointIndex);
         heapSort(points);
 
         int size = 1;
 
-        //If there are multiple points that give the same angle, we only keep the 
-        //one farthest from the lowest point and discard the rest. Since we are
-        //possibly discarding points, we will refer to the number of points by
-        //the new variable size, and no longer by the length of the array
+        // If there are multiple points that give the same angle, we only keep the 
+        // one farthest from the lowest point and discard the rest. Since we are
+        // possibly discarding points, we will refer to the number of points by
+        // the new variable size, and no longer by the length of the array.
         for(int i = 1; i < points.length; i++)
         {
-            while(i < points.length - 1 && Math.abs(counterClockwise(lowestPoint, points[i], points[i + 1])) < 0)
+            // Our heapsort implementation ensures that the farthest point will always 
+            // be at the end of a group of points with the same angle.
+            while(i < points.length - 1 
+                && Math.abs(orientation(lowestPoint, points[i], points[i + 1])) < Globals.POINT_EPSILON)
+            {
                 i++;
+            }
 
             points[size] = points[i];
             size++;
@@ -59,22 +64,30 @@ public class ConvexHull
         Stack<Point> stack = new Stack<Point>();
         for(int i = 0; i < size; i++)
         {
+            // Remove points on stack which make a right or clockwise turn.
+            // We keep points which make a left or counter-clockwise turn,
+            // as well as collinear points.
             while(stack.size() > 1 
-            && counterClockwise(nextToTop(stack), stack.peek(), points[i]) < 0)
+            && orientation(nextToTop(stack), stack.peek(), points[i]) < 0.0)
             {
                 stack.pop();
             }
+
+
             stack.push(points[i]);
         }
 
         SimplePolygon polygon = new SimplePolygon();
 
-        //add all vertices from the stack into the polygon
+        // Create a simple polygon with the points of the convex hull.
+        // When popping the points out of the stack, we get the vertices in
+        // clockwise order.
         while(!stack.empty())
         {
             polygon.addVertex(stack.pop());
         }
 
+        // Return the convex hull as a simple polygon.
         return polygon;
     }
 
@@ -128,29 +141,31 @@ public class ConvexHull
      */
     private static void heapify(Point[] points, int size, int i, Point p) 
     { 
+        // By largest we refer to the points that are considered greater by the 
+        // max heap, and thus should be higher on the binary heap.
         int largest = i; // Initialize largest as root of subtree.
         int left = 2*i + 1; // left child = 2*i + 1
         int right = 2*i + 2; // right child = 2*i + 2
 
         // Instead of computing the angle between the x-axis and a given point,
         // we calculate the Cosine of the angle as it is monotic in [0,pi],
-        // this is more efficient to compute.
+        // this is more efficient to compute and can be used for sorting the points
+        // just the same.
         double largestCos = getCos(p, points[largest]);
         
-        //if left is a valid index in the heap (as a node may not have a left
-        //child)
         if(left < size)
         {
             double leftCos = getCos(p, points[left]);
 
-            //if the two points make the same angle, the one with the "largest"
-            //is the point that is farthest from point p
+            // If the two points make the same angle, the largest point in the 
+            // max heap will be the one with the greatest distance from the
+            // reference point.
             if (Math.abs(leftCos - largestCos) < Globals.POINT_EPSILON)
             {
                 if(p.distance(points[left]) > p.distance(points[largest]))
                     largest = left;
             }
-            // If left child is larger than parent.
+            // Otherwise the largest point is the one with the greatest Cosine.
             else if (leftCos * -1  > largestCos * -1)
             {
                 largest = left; 
@@ -158,27 +173,30 @@ public class ConvexHull
             }
         }
 
-        //if right is a valid index in the heap (as a node may not have a right
-        //child)
         if(right < size)
         {
             double rightCos = getCos(p, points[right]);
 
-            //if the two points make the same angle, the one with the "largest"
-            //is the point that is farthest from point p
+            // If the two points make the same angle, the largest point in the 
+            // max heap will be the one with the greatest distance from the
+            // reference point.
             if (Math.abs(rightCos - largestCos) < Globals.POINT_EPSILON)
             {
                 if(p.distance(points[right]) > p.distance(points[largest]))
                     largest = right;
             }
-            // If right child is larger than parent.
-            else if (rightCos * -1 > largestCos * -1) 
-                largest = right; 
+            // Otherwise the largest point is the one with the greatest Cosine.
+            else if (rightCos * -1 > largestCos * -1)
+            {
+                largest = right;
+                largestCos = getCos(p, points[largest]);
+            }
         }
         
-        // If largest is not root.
+        // If the largest point is not the root of the subtree.
         if (largest != i) 
         { 
+            // Swap parent and left or right child.
             swap(points, i, largest);
   
             // Recursively heapify the affected sub-tree.
@@ -189,7 +207,7 @@ public class ConvexHull
     /**
      * Returns the Cosine of the angle formed by a vector pq, and a unit vector
      * in the direction of the x-axis. i.e., the angle between pq and the x-axis.
-     * We calculate the Cosine using the dot product of the vectors
+     * We calculate the Cosine using the dot product of the vectors.
      *
      * @param p Reference point, should be lowest point from set of points.
      * @param q Given point to calculate the angle with.
@@ -203,16 +221,17 @@ public class ConvexHull
     }
 
     /**
-     * Determines whether three points p1, p2, and p3 make a counterclockwise 
+     * Determines whether three points p1, p2, and p3 make a counter-clockwise 
      * turn, a clockwise turn, or if the points are collinear. To do this we 
-     * calculate the z-coordinate of the vectors p1p2 and p1p3.
+     * calculate the z-coordinate of the cross product of the vectors p1p2 and p1p3.
+     * (for counter-clockwise numbered points).
      * @param p1 The first point.
      * @param p2 The second point.
      * @param p3 The third point.
-     * @return a positive number if the points make a left turn, zero if the 
-     * points are collinear, a negative number otherwise
+     * @return A positive number if the points make a left turn (counter-clockwise), 
+     * zero if the points are collinear, a negative number otherwise (clockwise).
      */
-    private static double counterClockwise(Point p1, Point p2, Point p3)
+    private static double orientation(Point p1, Point p2, Point p3)
     {
 
         return (p2.getX() - p1.getX()) * (p3.getY() - p1.getY()) 
@@ -228,7 +247,7 @@ public class ConvexHull
     {
         Point top = stack.pop();
 
-        //if top was the only element in the stack
+        // If top was the only element in the stack.
         if(stack.empty()) 
         {
             stack.push(top);

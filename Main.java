@@ -10,12 +10,22 @@ public class Main
     public Main()
     {
         
-        Point[] points = {new Point(0,3), new Point(1,1), new Point(2,2),
-                         new Point(4,4), new Point(0,0), new Point(1,2), 
-                         new Point(3,1), new Point(3,3)};
+        Point[] points1 = {new Point(0,3), new Point(1,1), new Point(2,2),
+                        new Point(4,4), new Point(0,0), new Point(1,2), 
+                        new Point(3,1), new Point(3,3)};
 
-        SimplePolygon polygon = ConvexHull.grahamScan(points);
-        System.out.println(polygon);
+        Point[] points2 = {new Point(-7,8), new Point(-4,6), new Point(2,6), 
+                        new Point(6,4), new Point(8,6), new Point(7,-2), 
+                        new Point(4,-6), new Point(8,-7), new Point(0,0), 
+                        new Point(3,-2), new Point(6,-10), new Point(0,-6), 
+                        new Point(-9,-5), new Point(-8,-2), new Point(-8,0), 
+                        new Point(-10,3), new Point(-2,2), new Point(-10,4)};
+
+        SimplePolygon polygon1 = ConvexHull.grahamScan(points1);
+        System.out.println("Convex Hull 1: " + polygon1);
+
+        SimplePolygon polygon2 = ConvexHull.grahamScan(points2);
+        System.out.println("Convex Hull 2: " + polygon2);
 
         /*
         SimplePolygon polygon1 = new SimplePolygon();
@@ -96,17 +106,17 @@ public class Main
         System.out.printf("Triangle 3: %s, isPointOnPolygon(9.0,6.0): %b, expected: false%n", triangle3, triangle3.isPointOnPolygon(new Point(9.0,6.0)));
         System.out.printf("Triangle 3: %s, isPointOnPolygon(2.0,6.0): %b, expected: false%n%n", triangle3, triangle3.isPointOnPolygon(new Point(2.0,6.0)));
 
-        System.out.printf("Line 1 (slanted): %s, isPointOnPolygon(2.0,2.0): %b, expected: true%n", line1, line1.isPointOnPolygon(new Point(2.0,2.0)));
-        System.out.printf("Line 1 (slanted): %s, isPointOnPolygon(3.01,3.01): %b, expected: false%n", line1, line1.isPointOnPolygon(new Point(3.01,3.01)));
-        System.out.printf("Line 1 (slanted): %s, isPointOnPolygon(1.0,2.0): %b, expected: false%n%n", line1, line1.isPointOnPolygon(new Point(1.0,2.0)));
+        System.out.printf("Line 1new Point(slanted): %s, isPointOnPolygon(2.0,2.0): %b, expected: true%n", line1, line1.isPointOnPolygon(new Point(2.0,2.0)));
+        System.out.printf("Line 1new Point(slanted): %s, isPointOnPolygon(3.01,3.01): %b, expected: false%n", line1, line1.isPointOnPolygon(new Point(3.01,3.01)));
+        System.out.printf("Line 1new Point(slanted): %s, isPointOnPolygon(1.0,2.0): %b, expected: false%n%n", line1, line1.isPointOnPolygon(new Point(1.0,2.0)));
         
-        System.out.printf("Line 2 (horizontal): %s, isPointOnPolygon(2.5,3.0): %b, expected: true%n", line2, line2.isPointOnPolygon(new Point(2.5,3.0)));
-        System.out.printf("Line 2 (horizontal): %s, isPointOnPolygon(6.0,3.0): %b, expected: false%n", line2, line2.isPointOnPolygon(new Point(6.0,3.0)));
-        System.out.printf("Line 2 (horizontal): %s, isPointOnPolygon(2.5,2.99): %b, expected: false%n%n", line2, line2.isPointOnPolygon(new Point(2.5,2.99)));
+        System.out.printf("Line 2new Point(horizontal): %s, isPointOnPolygon(2.5,3.0): %b, expected: true%n", line2, line2.isPointOnPolygon(new Point(2.5,3.0)));
+        System.out.printf("Line 2new Point(horizontal): %s, isPointOnPolygon(6.0,3.0): %b, expected: false%n", line2, line2.isPointOnPolygon(new Point(6.0,3.0)));
+        System.out.printf("Line 2new Point(horizontal): %s, isPointOnPolygon(2.5,2.99): %b, expected: false%n%n", line2, line2.isPointOnPolygon(new Point(2.5,2.99)));
 
-        System.out.printf("Line 3 (vertical): %s, isPointOnPolygon(3.0,2.5): %b, expected: true%n", line3, line3.isPointOnPolygon(new Point(3.0,2.5)));
-        System.out.printf("Line 3 (vertical): %s, isPointOnPolygon(3.0,6.0): %b, expected: false%n", line3, line3.isPointOnPolygon(new Point(3.0,6.0)));
-        System.out.printf("Line 3 (vertical): %s, isPointOnPolygon(2.99,2.5): %b, expected: false%n%n", line3, line3.isPointOnPolygon(new Point(2.99,2.5)));
+        System.out.printf("Line 3new Point(vertical): %s, isPointOnPolygon(3.0,2.5): %b, expected: true%n", line3, line3.isPointOnPolygon(new Point(3.0,2.5)));
+        System.out.printf("Line 3new Point(vertical): %s, isPointOnPolygon(3.0,6.0): %b, expected: false%n", line3, line3.isPointOnPolygon(new Point(3.0,6.0)));
+        System.out.printf("Line 3new Point(vertical): %s, isPointOnPolygon(2.99,2.5): %b, expected: false%n%n", line3, line3.isPointOnPolygon(new Point(2.99,2.5)));
    
         System.out.printf("Hexagon: %s,isPointOnPolygon(1.0,3.0): %b, expected: true%n", hexagon, hexagon.isPointOnPolygon(new Point(1.0,3.0)));
         System.out.printf("Hexagon: %s,isPointOnPolygon(5.0,3.0): %b, expected: false%n", hexagon, hexagon.isPointOnPolygon(new Point(5.0,3.0)));
