@@ -9,6 +9,25 @@ public class Main
 
     public Main()
     {
+        
+        Point[] points1 = {new Point(0,3), new Point(1,1), new Point(2,2),
+                        new Point(4,4), new Point(0,0), new Point(1,2), 
+                        new Point(3,1), new Point(3,3)};
+
+        Point[] points2 = {new Point(-7,8), new Point(-4,6), new Point(2,6), 
+                        new Point(6,4), new Point(8,6), new Point(7,-2), 
+                        new Point(4,-6), new Point(8,-7), new Point(0,0), 
+                        new Point(3,-2), new Point(6,-10), new Point(0,-6), 
+                        new Point(-9,-5), new Point(-8,-2), new Point(-8,0), 
+                        new Point(-10,3), new Point(-2,2), new Point(-10,4)};
+
+        SimplePolygon polygon1 = ConvexHull.grahamScan(points1);
+        System.out.println("Convex Hull 1: " + polygon1);
+
+        SimplePolygon polygon2 = ConvexHull.grahamScan(points2);
+        System.out.println("Convex Hull 2: " + polygon2);
+
+        /*
         SimplePolygon polygon1 = new SimplePolygon();
         SimplePolygon triangle1 = new SimplePolygon();
         SimplePolygon triangle2 = new SimplePolygon();
@@ -103,5 +122,6 @@ public class Main
         System.out.printf("Hexagon: %s,isPointOnPolygon(5.0,3.0): %b, expected: false%n", hexagon, hexagon.isPointOnPolygon(new Point(5.0,3.0)));
         System.out.printf("Hexagon: %s, perimeter: %.3f, expected: 26.496%n", hexagon, hexagon.perimeter());
         System.out.printf("Hexagon: %s, area: %.3f, expected: 29.500%n", hexagon, hexagon.area());
+        */
     }
 }
