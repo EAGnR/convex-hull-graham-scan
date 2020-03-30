@@ -1,6 +1,6 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
-
 
 public class ConvexHull
 {
@@ -9,6 +9,19 @@ public class ConvexHull
     /**
      * Uses Graham Scan algorithm to compute the convex hull of a given set of 
      * points, and returns the vertices of the convex hull in clockwise order.
+     *
+     * @param points Unordered finite set of points in ArrayList form.
+     * @return The vertices of the convex hull as a {@code SimplePolygon}.
+     */
+    public static SimplePolygon grahamScan(ArrayList<Point> points)
+    {
+        return grahamScan((Point[]) points.toArray());
+    }
+
+    /**
+     * Uses Graham Scan algorithm to compute the convex hull of a given set of 
+     * points, and returns the vertices of the convex hull in clockwise order.
+     * Note that the point array passed to this method will be modified.
      *
      * @param points Unordered finite set of points.
      * @return The vertices of the convex hull as a {@code SimplePolygon}.
