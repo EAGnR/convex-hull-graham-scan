@@ -161,7 +161,7 @@ public class ConvexHull
         int right = 2*i + 2; // right child = 2*i + 2
 
         // Instead of computing the angle between the x-axis and a given point,
-        // we calculate the Cosine of the angle as it is monotic in [0,pi],
+        // we calculate the Cosine of the angle as it is monotonic in [0,pi],
         // this is more efficient to compute and can be used for sorting the points
         // just the same.
         double largestCos = getCos(p, points[largest]);
